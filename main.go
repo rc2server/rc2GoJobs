@@ -8,11 +8,12 @@ import (
 	//	"time"
 
 	//	"k8s.io/apimachinery/pkg/api/errors"
+//	v1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+//	api "k8s.io/client-go/kubernetes/typed/batch/v1"
+	batchv1client "k8s.io/client-go/kubernetes/typed/batch/v1"
 	"k8s.io/client-go/tools/clientcmd"
-	// Uncomment the following line to load the gcp plugin (only required to authenticate against GKE clusters).
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
 func main() {
@@ -36,6 +37,11 @@ func main() {
 		panic(err.Error)
 	}
 	fmt.Printf("there are %d pods\n", len(pods.Items))
+
+	batchClient := batchv1client.NewForConfigOrDie(config)
+	jobsClient := batchClient.Jobs("default")
+	jobList, err := jobsClient.List(metav1.ListOptions{})
+	fmt.Printf("there are %d jobs\n", len(jobList.Items))
 }
 
 func homeDir() string {
