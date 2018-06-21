@@ -8,10 +8,11 @@ import (
 	//	"time"
 
 	//	"k8s.io/apimachinery/pkg/api/errors"
-//	v1 "k8s.io/api/batch/v1"
+	//	v1 "k8s.io/api/batch/v1"
+	"k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-//	api "k8s.io/client-go/kubernetes/typed/batch/v1"
+	//	api "k8s.io/client-go/kubernetes/typed/batch/v1"
 	batchv1client "k8s.io/client-go/kubernetes/typed/batch/v1"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -42,6 +43,14 @@ func main() {
 	jobsClient := batchClient.Jobs("default")
 	jobList, err := jobsClient.List(metav1.ListOptions{})
 	fmt.Printf("there are %d jobs\n", len(jobList.Items))
+
+	myJob := v1.Job{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Job",
+			APIVersion: "v1",
+		},
+	}
+	jobsClient.Create(&myJob)
 }
 
 func homeDir() string {
